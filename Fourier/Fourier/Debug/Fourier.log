@@ -1,0 +1,4 @@
+﻿  Fourier.cpp
+d:\google диск\visual studio project\fourier\fourier\fourier.cpp(42): warning C4101: 'FiValue': unreferenced local variable
+d:\google диск\visual studio project\fourier\fourier\fourier.cpp(41): warning C4101: 'AmpValue': unreferenced local variable
+d:\google диск\visual studio project\fourier\fourier\fourier.cpp(191): error C2440: '=': cannot convert from 'double' to 'double *'

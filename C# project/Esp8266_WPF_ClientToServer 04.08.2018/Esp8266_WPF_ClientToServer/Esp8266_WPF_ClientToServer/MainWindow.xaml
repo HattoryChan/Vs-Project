@@ -1,0 +1,18 @@
+﻿<Window x:Class="Esp8266_WPF_ClientToServer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Esp8266_WPF_ClientToServer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button x:Name="TCPConn_Butt" Content="Conn to TCP IP" HorizontalAlignment="Left" Height="42" Margin="24,77,0,0" VerticalAlignment="Top" Width="109" FontSize="14"/>
+        <TextBox x:Name="TCPAdress_TextBox" HorizontalAlignment="Left" Height="27" Margin="24,45,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="227" FontSize="18"/>
+        <TextBlock x:Name="TCPLabel_TextBlock" HorizontalAlignment="Left" Margin="24,10,0,0" TextWrapping="Wrap" Text="Format: IP:Port" VerticalAlignment="Top" Height="30" Width="227" FontSize="18"/>
+        <TextBox x:Name="ServDevicename_TextBox" HorizontalAlignment="Left" Height="32" Margin="343,40,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="227"/>
+        <Button x:Name="ServConnToDev_Butt" Content="Button" HorizontalAlignment="Left" Height="42" Margin="343,77,0,0" VerticalAlignment="Top" Width="109"/>
+        <TextBlock x:Name="ServDevLabel_TextBlock" HorizontalAlignment="Left" Margin="343,10,0,0" TextWrapping="Wrap" Text="Format: IP:Port" VerticalAlignment="Top" Height="30" Width="227" FontSize="18"/>
+
+    </Grid>
+</Window>
