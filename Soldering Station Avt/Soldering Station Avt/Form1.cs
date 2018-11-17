@@ -41,6 +41,8 @@ namespace Soldering_Station_Avt
             TopH_pnl.Controls.Add(TopHeat_lb);
             TopH_pnl.Controls.Add(Top_Graphics_Box);
 
+            TimeSet_comBox.Items.AddRange(new string[] { "Sec", "Min", "Hour" }); //Add measurement to comBox
+            TimeSet_comBox.SelectedIndex = 1; //Set Min as default
             
         }
 
@@ -96,7 +98,7 @@ namespace Soldering_Station_Avt
             {
                 e.Graphics.DrawLine(new Pen(Color.Black, GridSecWigth*2), new Point(GridMainWigth/2, Bot_Graphics_Box.Height - i) ,new Point(GridMainWigth*2, Bot_Graphics_Box.Height - i)); //division
 
-                e.Graphics.DrawString(i.ToString(), new Font("Arial", GridTextSize), new SolidBrush(Color.Black), new Point(GridMainWigth * 3, Bot_Graphics_Box.Height - i + GridTextSize)); //value
+                e.Graphics.DrawString(i.ToString(), new Font("Arial", GridTextSize), new SolidBrush(Color.Black), new Point(GridMainWigth * 3, Bot_Graphics_Box.Height-25 - i + GridTextSize)); //value
                 
             }
 
@@ -107,7 +109,7 @@ namespace Soldering_Station_Avt
             }
 
 
-            if (twoPoint_count >= 2)
+            if (twoPoint_count >= 2)   //draw graphics
             {
                 for (int i = 2; i <= twoPoint_count; i++)
                 {
@@ -171,7 +173,7 @@ namespace Soldering_Station_Avt
             }
             if (MenuMain_tabCon.SelectedTab == Bottom_tabP)   //This is our flag to see which panel be active!
             {
-                MessageBox.Show("Bott");
+              //  MessageBox.Show("Bott");
             }
         }
 
@@ -186,12 +188,14 @@ namespace Soldering_Station_Avt
             {
                 MenuMain_tabCon.Enabled = false; //Disable all other elements
                 BottomH_pnl.Enabled = false;
-                Bot_Graphics_Box.Enabled = false;
-                GraphicDr_chBox.Enabled = false;
+                Bot_Graphics_Box.Enabled = false;                
 
                 TimeSet_pnl.Visible = true;    //TimeSet panel - visible
                 SelectedDot = DrawPoint_lb.SelectedIndex;   // Remember dot number
                 TimeSet_lb.Text = $"Set Time for button №{SelectedDot+1} :";  // Show dot number
+
+                TimeSet_tBox.Focus();  //Set cursor on Text Box
+                
                 
                 DrawPoint_lb.ClearSelected();               //And Clear selected Flag
             }
@@ -216,10 +220,28 @@ namespace Soldering_Station_Avt
             else
             {
                 twoPointTime[SelectedDot] = Convert.ToInt32(TimeSet_tBox.Text);       //Get Text Box value  and add to list
-                DrawPoint_lb.Items[SelectedDot] = $"Point {SelectedDot+1} = [{twoPoint[SelectedDot].Y},{twoPointTime[SelectedDot]}]";
+                DrawPoint_lb.Items[SelectedDot] = $"Point {SelectedDot+1} = [{twoPoint[SelectedDot+1].Y},{twoPointTime[SelectedDot]}]"; 
             }
             TimeSet_tBox.Clear();  //Clear TextBox
             
+        }
+
+        private void TxtSave_Butt_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.Filter = "Text files(*.txt)|*.txt|All files(*.*)|*.*";
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            string filename = saveFileDialog1.FileName;
+            string dotString = "";
+            for (int i = 1; i< twoPoint_count; i++)
+            {
+                dotString += $"{twoPoint[i].Y}\t{twoPointTime[i-1]}\n";
+            }
+            // сохраняем текст в файл
+            System.IO.File.WriteAllText(filename, dotString);
+            MessageBox.Show("Файл сохранен");
         }
     }
 }

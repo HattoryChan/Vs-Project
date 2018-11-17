@@ -33,8 +33,6 @@
             this.Coord_lb = new System.Windows.Forms.Label();
             this.ShowCoordLabel = new System.Windows.Forms.Label();
             this.DrawPoint_lb = new System.Windows.Forms.ListBox();
-            this.ShowDotLabel = new System.Windows.Forms.Label();
-            this.ChangeDotInfo_label = new System.Windows.Forms.Label();
             this.BottHeat_lb = new System.Windows.Forms.Label();
             this.BottomH_pnl = new System.Windows.Forms.Panel();
             this.TopH_pnl = new System.Windows.Forms.Panel();
@@ -48,6 +46,9 @@
             this.TimeSett_butt = new System.Windows.Forms.Button();
             this.TimeSet_tBox = new System.Windows.Forms.TextBox();
             this.TimeSet_lb = new System.Windows.Forms.Label();
+            this.Sett_tabP = new System.Windows.Forms.TabPage();
+            this.TxtSave_Butt = new System.Windows.Forms.Button();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.Bot_Graphics_Box)).BeginInit();
             this.BottomH_pnl.SuspendLayout();
             this.TopH_pnl.SuspendLayout();
@@ -56,6 +57,7 @@
             this.Bottom_tabP.SuspendLayout();
             this.Top_tabP.SuspendLayout();
             this.TimeSet_pnl.SuspendLayout();
+            this.Sett_tabP.SuspendLayout();
             this.SuspendLayout();
             // 
             // Bot_Graphics_Box
@@ -110,24 +112,6 @@
             this.DrawPoint_lb.TabIndex = 5;
             this.DrawPoint_lb.SelectedIndexChanged += new System.EventHandler(this.DrawPoint_lb_SelectedIndexChanged);
             // 
-            // ShowDotLabel
-            // 
-            this.ShowDotLabel.AutoSize = true;
-            this.ShowDotLabel.Location = new System.Drawing.Point(1107, 512);
-            this.ShowDotLabel.Name = "ShowDotLabel";
-            this.ShowDotLabel.Size = new System.Drawing.Size(149, 13);
-            this.ShowDotLabel.TabIndex = 7;
-            this.ShowDotLabel.Text = "You changing dot №, to value";
-            // 
-            // ChangeDotInfo_label
-            // 
-            this.ChangeDotInfo_label.AutoSize = true;
-            this.ChangeDotInfo_label.Location = new System.Drawing.Point(1117, 536);
-            this.ChangeDotInfo_label.Name = "ChangeDotInfo_label";
-            this.ChangeDotInfo_label.Size = new System.Drawing.Size(94, 13);
-            this.ChangeDotInfo_label.TabIndex = 8;
-            this.ChangeDotInfo_label.Text = "№ of point = value";
-            // 
             // BottHeat_lb
             // 
             this.BottHeat_lb.AutoSize = true;
@@ -180,7 +164,8 @@
             // 
             this.MenuMain_tabCon.Controls.Add(this.Bottom_tabP);
             this.MenuMain_tabCon.Controls.Add(this.Top_tabP);
-            this.MenuMain_tabCon.Location = new System.Drawing.Point(9, 3);
+            this.MenuMain_tabCon.Controls.Add(this.Sett_tabP);
+            this.MenuMain_tabCon.Location = new System.Drawing.Point(9, 10);
             this.MenuMain_tabCon.Name = "MenuMain_tabCon";
             this.MenuMain_tabCon.SelectedIndex = 0;
             this.MenuMain_tabCon.Size = new System.Drawing.Size(1018, 522);
@@ -216,7 +201,7 @@
             this.TimeSet_pnl.Controls.Add(this.TimeSett_butt);
             this.TimeSet_pnl.Controls.Add(this.TimeSet_tBox);
             this.TimeSet_pnl.Controls.Add(this.TimeSet_lb);
-            this.TimeSet_pnl.Location = new System.Drawing.Point(1029, 481);
+            this.TimeSet_pnl.Location = new System.Drawing.Point(1048, 505);
             this.TimeSet_pnl.Name = "TimeSet_pnl";
             this.TimeSet_pnl.Size = new System.Drawing.Size(228, 94);
             this.TimeSet_pnl.TabIndex = 10;
@@ -226,7 +211,7 @@
             this.TimeSet_comBox.FormattingEnabled = true;
             this.TimeSet_comBox.Location = new System.Drawing.Point(126, 33);
             this.TimeSet_comBox.Name = "TimeSet_comBox";
-            this.TimeSet_comBox.Size = new System.Drawing.Size(38, 21);
+            this.TimeSet_comBox.Size = new System.Drawing.Size(74, 21);
             this.TimeSet_comBox.TabIndex = 3;
             // 
             // TimeSett_butt
@@ -256,6 +241,27 @@
             this.TimeSet_lb.TabIndex = 0;
             this.TimeSet_lb.Text = "Set Time for Button:";
             // 
+            // Sett_tabP
+            // 
+            this.Sett_tabP.Controls.Add(this.TxtSave_Butt);
+            this.Sett_tabP.Location = new System.Drawing.Point(4, 22);
+            this.Sett_tabP.Name = "Sett_tabP";
+            this.Sett_tabP.Padding = new System.Windows.Forms.Padding(3);
+            this.Sett_tabP.Size = new System.Drawing.Size(1010, 496);
+            this.Sett_tabP.TabIndex = 2;
+            this.Sett_tabP.Text = "Setting";
+            this.Sett_tabP.UseVisualStyleBackColor = true;
+            // 
+            // TxtSave_Butt
+            // 
+            this.TxtSave_Butt.Location = new System.Drawing.Point(27, 47);
+            this.TxtSave_Butt.Name = "TxtSave_Butt";
+            this.TxtSave_Butt.Size = new System.Drawing.Size(129, 34);
+            this.TxtSave_Butt.TabIndex = 0;
+            this.TxtSave_Butt.Text = "Save To Txt";
+            this.TxtSave_Butt.UseVisualStyleBackColor = true;
+            this.TxtSave_Butt.Click += new System.EventHandler(this.TxtSave_Butt_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -263,8 +269,6 @@
             this.ClientSize = new System.Drawing.Size(1276, 572);
             this.Controls.Add(this.TimeSet_pnl);
             this.Controls.Add(this.MenuMain_tabCon);
-            this.Controls.Add(this.ChangeDotInfo_label);
-            this.Controls.Add(this.ShowDotLabel);
             this.Controls.Add(this.DrawPoint_lb);
             this.Controls.Add(this.ShowCoordLabel);
             this.Controls.Add(this.Coord_lb);
@@ -282,6 +286,7 @@
             this.Top_tabP.ResumeLayout(false);
             this.TimeSet_pnl.ResumeLayout(false);
             this.TimeSet_pnl.PerformLayout();
+            this.Sett_tabP.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -294,8 +299,6 @@
         private System.Windows.Forms.Label Coord_lb;
         private System.Windows.Forms.Label ShowCoordLabel;
         private System.Windows.Forms.ListBox DrawPoint_lb;
-        private System.Windows.Forms.Label ShowDotLabel;
-        private System.Windows.Forms.Label ChangeDotInfo_label;
         private System.Windows.Forms.Label BottHeat_lb;
         private System.Windows.Forms.Panel BottomH_pnl;
         private System.Windows.Forms.Panel TopH_pnl;
@@ -309,6 +312,9 @@
         private System.Windows.Forms.ComboBox TimeSet_comBox;
         private System.Windows.Forms.Button TimeSett_butt;
         private System.Windows.Forms.TextBox TimeSet_tBox;
+        private System.Windows.Forms.TabPage Sett_tabP;
+        private System.Windows.Forms.Button TxtSave_Butt;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 
