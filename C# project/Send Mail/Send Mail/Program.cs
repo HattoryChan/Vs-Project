@@ -15,7 +15,7 @@ namespace Send_Mail
 {
     class Program
     {
-        public const int TryNumber = 2;
+        public const int TryNumber = 4;
         public static int TryCount = 0;
 
         public static string StrSMTP = null;
@@ -114,8 +114,7 @@ namespace Send_Mail
 
             if (FlagDeleteFile == '1')
             {
-                Console.WriteLine("Enter folder: ");
-                System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+                Console.WriteLine("Enter folder: ");               
                 StrDeletedFileFolder = Console.ReadLine();               
                 Console.WriteLine(System.IO.File.Exists(StrDeletedFileFolder) ? "File found!" : "File does not exist.");
             }
@@ -219,6 +218,7 @@ namespace Send_Mail
                     {
 
                         /* SendEmail ( data)*/;
+                       
                     }
                     catch (Exception e)
                     {
