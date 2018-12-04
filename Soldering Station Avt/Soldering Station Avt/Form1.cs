@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 
+
 namespace Soldering_Station_Avt
 {
     public partial class Form1 : Form
     {
+        
         Point[] twoPoint = new Point[100];
         int[] twoPointTime = new int[100];
         bool IsClicked = false;
@@ -29,6 +31,7 @@ namespace Soldering_Station_Avt
         int GridScaleStep = 25;
         int GridTextSize = 8;
 
+       
         public Form1()
         {
             InitializeComponent();
@@ -43,7 +46,9 @@ namespace Soldering_Station_Avt
 
             TimeSet_comBox.Items.AddRange(new string[] { "Sec", "Min", "Hour" }); //Add measurement to comBox
             TimeSet_comBox.SelectedIndex = 1; //Set Min as default
+
             
+
         }
 
         private void Graphics_Box_MouseDown(object sender, MouseEventArgs e)
@@ -85,42 +90,11 @@ namespace Soldering_Station_Avt
 
         private void Graphics_Box_Paint(object sender, PaintEventArgs e)
         {
-            Pen penBlack = new Pen(Color.Black,lineWidth);
-            Pen penRed = new Pen(Color.Red, lineWidth);
-            System.Drawing.Font drawFont = new System.Drawing.Font("Arial", GridTextSize);
-            System.Drawing.SolidBrush drawBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
+            //Draw graphic for Bottom heater
+            Pen PenBlack = new Pen(Color.Black, 2);
+            GraphDraw Bot_Draw = new GraphDraw(Bot_Graphics_Box, twoPoint, twoPointTime, twoPoint_count);
+            Bot_Draw.Paint(sender, e);
 
-            //Remember: X and Y axes - reversed
-            e.Graphics.DrawLine(new Pen(Color.Black, GridMainWigth), new Point((GridMainWigth / 3), 0), new Point((GridMainWigth / 3), Bot_Graphics_Box.Height)); //Draw Axes
-            e.Graphics.DrawLine(new Pen(Color.Black, GridMainWigth), new Point(0, Bot_Graphics_Box.Height - (GridMainWigth / 2)),new Point(Bot_Graphics_Box.Width, Bot_Graphics_Box.Height - (GridMainWigth / 2)));
-
-            for(int i = GridScaleMin ; i <= GridScaleMax ; i+=GridScaleStep ) //Draw X,Y axes and the division
-            {
-                e.Graphics.DrawLine(new Pen(Color.Black, GridSecWigth*2), new Point(GridMainWigth/2, Bot_Graphics_Box.Height - i) ,new Point(GridMainWigth*2, Bot_Graphics_Box.Height - i)); //division
-
-                e.Graphics.DrawString(i.ToString(), new Font("Arial", GridTextSize), new SolidBrush(Color.Black), new Point(GridMainWigth * 3, Bot_Graphics_Box.Height-25 - i + GridTextSize)); //value
-                
-            }
-
-
-            for (int i = GridScaleMin; i <= GridScaleMax; i += (GridScaleStep + GridSecWigth/2)) //Draw Grid
-            {
-                e.Graphics.DrawLine(new Pen(Color.Black, GridMainWigth / 4), new Point(0, Bot_Graphics_Box.Height - i), new Point(Bot_Graphics_Box.Width, Bot_Graphics_Box.Height - i)); //main Grid
-            }
-
-
-            if (twoPoint_count >= 2)   //draw graphics
-            {
-                for (int i = 2; i <= twoPoint_count; i++)
-                {
-                    for (int b = 0; b <= dotRadius; b++)   //вычитаем длинну формы из Y координаты для смены точки нуля                     
-                    {                        
-                        e.Graphics.DrawRectangle(penBlack, twoPoint[i - 1].X - (dotRadius / 2), (Bot_Graphics_Box.Height - twoPoint[i - 1].Y ) - (dotRadius / 2), b, b); //Draw point
-                    }
-                    e.Graphics.DrawLine(penBlack, new Point(twoPoint[i - 2].X, Bot_Graphics_Box.Height - twoPoint[i - 2].Y),
-                                                        new Point(twoPoint[i - 1].X, Bot_Graphics_Box.Height - twoPoint[i - 1].Y)); //Draw line
-                }
-            }
         }
 
         private void GraphicDr_chBox_CheckedChanged(object sender, EventArgs e)
