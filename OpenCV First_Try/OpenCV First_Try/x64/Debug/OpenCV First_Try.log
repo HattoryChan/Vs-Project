@@ -1,0 +1,7 @@
+﻿  OpenCV First_Try.cpp
+d:\google диск\visual studio project\opencv first_try\opencv first_try\opencv first_try.cpp(47): error C2664: 'void cvMoments(const CvArr *,CvMoments *,int)': cannot convert argument 1 from 'std::vector<std::vector<cv::Point,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>' to 'const CvArr *'
+          with
+          [
+              _Ty=cv::Point
+          ]
+  d:\google диск\visual studio project\opencv first_try\opencv first_try\opencv first_try.cpp(47): note: No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called

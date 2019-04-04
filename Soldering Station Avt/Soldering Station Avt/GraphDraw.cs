@@ -22,16 +22,26 @@ namespace Soldering_Station_Avt
         Pen Pen_Line = new Pen(Color.Black, 2);
         Pen Pen_Dot = new Pen(Color.Black, 5);
 
-        Point[] twoPoint;
-        int[] twoPointTime;
-        int twoPoint_count;
+        Point[] twoPoint = new Point[100];
+        int[] twoPointTime = new int[100];
 
-        public GraphDraw (PictureBox GraphBox, Point[] DotPoint, int[] TimePoint, int DotPoint_count)
+        int twoPoint_count = 1;
+
+        public Point[] twoPointget
+        {
+            get
+            {
+                return twoPoint;
+            }
+
+        }
+
+        public GraphDraw (PictureBox GraphBox)//, Point[] DotPoint, int[] TimePoint, int DotPoint_count)
         {
             Graphics = GraphBox;
-            twoPoint = DotPoint;
-            twoPointTime = TimePoint;
-            twoPoint_count = DotPoint_count;
+          //  twoPoint = DotPoint;
+           // twoPointTime = TimePoint;
+          //  twoPoint_count = DotPoint_count;
         }
 
         public void Pen_sett(Pen LinePen)
@@ -45,9 +55,78 @@ namespace Soldering_Station_Avt
         }
 
 
+        public void DrawStart(ListBox DrawPoint_lb)
+        {
+            twoPoint[0] = new Point(0, 0);//Convert.ToInt32(Graphics_Box.Height));
+            DrawPoint_lb.Items.Add($"Point {twoPoint_count} = [{twoPoint[twoPoint_count].Y},{twoPointTime[twoPoint_count]}]");
+            twoPoint_count++;
+        }
+
+        public void AddToDotList(Point e, ListBox DrawPoint_lb)
+        {
+            if (twoPoint[twoPoint_count - 1].X < e.X)  //Time can't go back
+            {
+                twoPoint[twoPoint_count] = new Point(e.X,  e.Y); //вычитаем длинну формы из Y координаты для смены точки нуля
+                twoPointTime[twoPoint_count] = e.X;                //Add time value to Array
+
+                DrawPoint_lb.Items.Add($"Point {twoPoint_count} = [{twoPoint[twoPoint_count].Y},{twoPointTime[twoPoint_count]}]");
+                twoPoint_count++;
+            }
+            else
+            {
+                MessageBox.Show("Time does not turn back!");
+            }
+        }
 
 
-        public void Paint(object sender, PaintEventArgs e)
+        public void MouseUp(object sender, MouseEventArgs e,ListBox DrawPoint_lb)
+        {
+            if (twoPoint[twoPoint_count - 1].X < e.X)  //Time can't go back
+            {
+                twoPoint[twoPoint_count] = new Point(e.X, Convert.ToInt32(Graphics.Height) - e.Y); //вычитаем длинну формы из Y координаты для смены точки нуля
+                twoPointTime[twoPoint_count] = 0;                //Add time value to Array
+
+                DrawPoint_lb.Items.Add($"Point {twoPoint_count} = [{twoPoint[twoPoint_count].Y},{twoPointTime[twoPoint_count]}]");
+                twoPoint_count++;
+            }
+            else
+            {
+                MessageBox.Show("Time does not turn back!");
+            }
+        }
+
+        public void TimeSet(TextBox TimeSet_tBox, ListBox DrawPoint_lb, int SelectedDot)
+        {
+            if (!Int32.TryParse(TimeSet_tBox.Text, out int n)) //Check to Integer
+            {
+                MessageBox.Show("You didn't enter Integer, please, be carefull!");
+            }
+            else
+            {
+                twoPointTime[SelectedDot] = Convert.ToInt32(TimeSet_tBox.Text);       //Get Text Box value  and add to list
+                DrawPoint_lb.Items[SelectedDot] = $"Point {SelectedDot + 1} = [{twoPoint[SelectedDot + 1].Y},{twoPointTime[SelectedDot]}]";
+            }
+        }
+
+        public void TxtSave(SaveFileDialog saveFileDialog1)
+        {
+            saveFileDialog1.Filter = "Text files(*.txt)|*.txt|All files(*.*)|*.*";
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            // получаем выбранный файл
+            string filename = saveFileDialog1.FileName;
+            string dotString = "";
+            for (int i = 1; i < twoPoint_count; i++)
+            {
+
+                dotString += $"{twoPoint[i].Y}\t{twoPointTime[i-1]}\n";
+            }
+            // сохраняем текст в файл
+            System.IO.File.WriteAllText(filename, dotString);
+        }
+
+        public void Paint(object sender, PaintEventArgs e, Color PenColor)
         {
 
             //Remember: X and Y axes - reversed
@@ -75,12 +154,26 @@ namespace Soldering_Station_Avt
                 {
                     for (int b = 0; b <= Pen_Dot.Width; b++)   //вычитаем длинну формы из Y координаты для смены точки нуля                     
                     {
-                        e.Graphics.DrawRectangle(Pen_Dot, twoPoint[i - 1].X - (Pen_Dot.Width / 2), (Graphics.Height - twoPoint[i - 1].Y) - (Pen_Dot.Width / 2), b, b); //Draw point
+                        e.Graphics.DrawRectangle(new Pen(PenColor, Pen_Dot.Width), twoPoint[i - 1].X - (Pen_Dot.Width / 2), (Graphics.Height - twoPoint[i - 1].Y) - (Pen_Dot.Width / 2), b, b); //Draw point
                     }
-                    e.Graphics.DrawLine(Pen_Line, new Point(twoPoint[i - 2].X, Graphics.Height - twoPoint[i - 2].Y),
-                                                        new Point(twoPoint[i - 1].X, Graphics.Height - twoPoint[i - 1].Y)); //Draw line
+                    e.Graphics.DrawLine(new Pen(PenColor, Pen_Line.Width), new Point(twoPoint[i - 2].X, Graphics.Height - twoPoint[i - 2].Y),
+                                                                           new Point(twoPoint[i - 1].X, Graphics.Height - twoPoint[i - 1].Y)); //Draw line
                 }
             }
+        }
+
+        /*----------------------------------------------------
+         * Function for getting data
+         * ---------------------------------------------------
+         */
+        public Point twoPoint_get(int index)
+        {
+            return twoPoint[index];
+        }
+
+        public int twoPointTime_get(int index)
+        {
+            return twoPointTime[index];
         }
     }
 }
