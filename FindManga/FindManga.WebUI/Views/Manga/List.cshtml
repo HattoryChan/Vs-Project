@@ -1,0 +1,21 @@
+﻿@using FindManga.Domain.Entities
+@using FindManga.WebUI.Models
+@using FindManga.WebUI.HtmlHelpers
+@model MangaListViewModel
+
+@{ 
+    ViewBag.Title = "Манга";
+}
+
+@foreach (var p in @Model.Mangas)
+{
+    <div>
+        <h3>@p.Name</h3>
+        <p>@p.Description</p>
+        <h4>@p.Folder</h4>
+    </div>
+}
+
+<div>
+    @Html.PageLinks(Model.PagingInfo, x => Url.Action("List", new { page = x}))
+</div>

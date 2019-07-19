@@ -1,0 +1,3 @@
+SendMail("smtp.mail.ru", "zmkelanserv@mail.ru", "du78KW", "pyrion@mail.ru", "Server Down!", "Network server down! Need fix it fast!");
+public static void SendMail(string smtpServer, string from, string password,
+                                    string mailto, string caption, string message, string attachFile = null)

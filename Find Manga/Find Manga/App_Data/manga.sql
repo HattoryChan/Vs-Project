@@ -1,0 +1,7 @@
+﻿CREATE TABLE manga
+(
+	[id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [name] NVARCHAR(MAX) NOT NULL, 
+    [desc] NVARCHAR(MAX) NULL, 
+    [folder] NVARCHAR(MAX) NULL
+)
