@@ -6,7 +6,7 @@ namespace StringCalculator_UTest
     [TestClass]
     public class ValidationOfCalculations
     {
-        
+        /*
         [TestMethod]
         public void Summ()
         {
@@ -68,5 +68,5 @@ namespace StringCalculator_UTest
 
             Assert.AreEqual<string>("We found incorrect character in your equation, delete it please.", TestCalc.CalculateEquation("1_h/ 0"));
         }
-    }
+  */  }
 }
