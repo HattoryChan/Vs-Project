@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Session;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Identity;
 
 namespace HookahSearchServer
 {
@@ -31,9 +32,17 @@ namespace HookahSearchServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string con = "Data Source=АДМИН-ПК;Initial Catalog=HookahSearch;Integrated Security=False;User ID=sa;Password=Ahfyrtyintqy101;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
-            services.AddDbContext<DbTables>(options => options.UseSqlServer(con));
+            //string con = "Data Source=АДМИН-ПК;Initial Catalog=HookahSearch;Integrated Security=False;User ID=sa;Password=Ahfyrtyintqy101;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;";
+            // services.AddDbContext<DbTables>(options => options.UseSqlServer(con));
 
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationContext>();
+
+
+            /*
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -60,7 +69,7 @@ namespace HookahSearchServer
 
                     };
                 });
-
+            */
             services.AddMvc();
 
             services.AddSingleton<IHookahRepository, HookahRepository>();
@@ -75,20 +84,22 @@ namespace HookahSearchServer
             }
             else
             {
+                app.UseExceptionHandler("/Home/Error");                
                 //app.UseHsts();
             }
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute("default", "{controller=user}");
-            });
-
+            
             //app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
