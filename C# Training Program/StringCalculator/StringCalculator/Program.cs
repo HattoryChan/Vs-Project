@@ -29,7 +29,7 @@ namespace StringCalculator
                 //string eq = "q-1,2+y";
                 //Console.WriteLine(Convert.ToSingle(new string(eq.ToCharArray(1, 4))));
 
-                StringCalculator t = new StringCalculator("13-2,2*13/8+44*456,45464");
+                StringCalculator t = new StringCalculator("(13-2,2)*((13/8)+44*456,45464)");
                 t.test();
             }
             while (Console.ReadKey().Key != ConsoleKey.Escape);
@@ -85,13 +85,14 @@ namespace StringCalculator
         {
            // foreach (int t in SignSearch())
             //    Console.WriteLine(Convert.ToString(t));
-            Console.WriteLine("Numbers");
-            foreach (float t in SeparateNumber(SignSearch(), equation))
-                Console.WriteLine(Convert.ToString(t));
+            //Console.WriteLine("Numbers");
+            //foreach (float t in SeparateNumber(SignSearch(), equation))
+           //     Console.WriteLine(Convert.ToString(t));
 
             Console.WriteLine("Equation");
             Console.WriteLine(equation);
-            CalculateEquation(SignSearch(), SeparateNumber(SignSearch(), equation));
+            // CalculateEquation(SignSearch(), SeparateNumber(SignSearch(), equation));
+            BracketsCalculated(equation, BracketsSearch(equation));
         }
 
         private List<float> SeparateNumber(List<int> signAndPos, string equation)
@@ -253,35 +254,75 @@ namespace StringCalculator
             return numb;
         }
 
-        private int CalculateEquation(List<int> signAndPos, List<int> numb)
+        private List<int> BracketsSearch(string equation)
         {
-            var bracketsOpenIndex = new List<int>();
-            var bracketsCloseIndex = new List<int>();
+            List<int> bracketsPos = new List<int>();
 
-            int index = signAndPos.IndexOf('(');
-            while (index != -1)
+            for (int i = 0; i < equation.Length; i++)
             {
-               bracketsOpenIndex.Add(signAndPos[signAndPos.IndexOf('(', index+1) + 1]);
-               index = signAndPos.IndexOf('(', index + 1);
+                if (equation[i] == '(' |
+                    equation[i] == ')')
+                {
+                    bracketsPos.Add(i);
+                }
             }
 
-            index = signAndPos.IndexOf(')');
-            while (signAndPos.IndexOf(')') != -1)
+            Console.WriteLine("Brackets");
+            foreach (var t in bracketsPos)
+                Console.WriteLine($"{equation[t]}  {t}");
+
+            return bracketsPos;
+        }
+
+        private int BracketsCalculated(string equation, List<int> bracketsPos)
+        {
+            /*
+            for (int i = bracketsPos.Count; i > 0; i-=2)
             {
-                bracketsCloseIndex.Add(signAndPos[signAndPos.IndexOf(')', index + 1) + 1]);
-                index = signAndPos.IndexOf(')', index + 1);
+                Console.WriteLine($"Brackets check: {i / 2 - 1}  {equation[bracketsPos[i / 2 - 1]]}  {i / 2}   {equation[bracketsPos[i / 2]]}");
+                if (equation[bracketsPos[i / 2 - 1]] != '(')
+                {
+                    Console.WriteLine("Er");
+                }
+                else
+                {
+                    Console.WriteLine("Well done");
+                }
+                
+            }
+           
+            for (int i = bracketsPos.Count; i > 0; i-=2)
+            {
+               // Console.WriteLine($"Brackets count: {bracketsPos.Count}");
+                Console.WriteLine($"Brackets check: {i / 2 }  {equation[bracketsPos[i / 2]]} ");
+                //Console.WriteLine(bracketsPos[i / 2]);
+               // bracketsPos.RemoveAt(i / 2);
+
+                Console.WriteLine($"Brackets check: {i / 2 + 1}  ");// {equation[bracketsPos[i / 2]]} ");
+                Console.WriteLine();
+                //Console.WriteLine(bracketsPos[i / 2]);
+                //bracketsPos.RemoveAt(i / 2+1);
+            }
+             */
+            int pos = 0;
+
+            for (int i = 0; i < bracketsPos.Count; i++)
+            {
+                if()
             }
 
-            if (bracketsCloseIndex.Count != bracketsOpenIndex.Count) throw new Exception("Brackets are not closed");
 
+            if (bracketsPos.Count % 2 != 0) Console.WriteLine("Brackets are not closed");
 
+            Console.WriteLine("Brackets");
+            foreach (var t in bracketsPos)
+                Console.WriteLine(t);
 
-
-                return 0;
+            return 0;
         }
 
 
-        public string CalculateEquation(string equation)
+        public string CalculateEquationDataTableCompute(string equation)
         {            
             try
             {
