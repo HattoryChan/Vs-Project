@@ -12,8 +12,8 @@ using System.Security.Claims;
 
 namespace HookahSearchServer.Controllers
 {
-   // [Produces("application/json")]
-   // [Route("api/Account")]
+    [Produces("application/json")]
+    [Route("api/Account")]
     public class AccountController : Controller
     {
         private List<Person> people = new List<Person>

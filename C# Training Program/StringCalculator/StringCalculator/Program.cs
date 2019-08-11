@@ -47,7 +47,7 @@ namespace StringCalculator
             this.equation = equation;
         }
 
-        private List<int> SignSearch()
+        private List<int> SignSearch(string equation)
         {
             var signAndPos = new List<int>();
             
@@ -70,7 +70,10 @@ namespace StringCalculator
                     }
                 }                               
             }
-            
+
+            //foreach (var t in signAndPos)
+             //   Console.WriteLine($" signAndPos: {t}");
+
             int prevIndex = signAndPos[1];
             for (int i = 3; i < signAndPos.Count; i+=2)
             {
@@ -92,12 +95,15 @@ namespace StringCalculator
             Console.WriteLine("Equation");
             Console.WriteLine(equation);
             // CalculateEquation(SignSearch(), SeparateNumber(SignSearch(), equation));
-            BracketsCalculated(equation, BracketsSearch(equation));
+            Console.WriteLine( Convert.ToString( BracketsCalculated(BracketsPairsSearch(equation, BracketsSearch(equation))) ));
         }
 
         private List<float> SeparateNumber(List<int> signAndPos, string equation)
         {
             var numb = new List<float>();
+            Console.WriteLine(equation);
+            foreach (var t in signAndPos)
+                Console.WriteLine($"sign: {t}");
                 try
                 {               
                     //first number
@@ -130,8 +136,8 @@ namespace StringCalculator
                 numb = CalculateSimilarSign(signAndPos, numb, '-');
                 numb = CalculateSimilarSign(signAndPos, numb, '+');
                 
-                foreach (var t in numb)
-                    Console.WriteLine($"Numb array: {t}");
+               // foreach (var t in numb)
+                //    Console.WriteLine($"Numb array: {t}");
             }
             catch (Exception ex)
             {
@@ -266,60 +272,91 @@ namespace StringCalculator
                     bracketsPos.Add(i);
                 }
             }
-
-            Console.WriteLine("Brackets");
-            foreach (var t in bracketsPos)
-                Console.WriteLine($"{equation[t]}  {t}");
+            if (bracketsPos.Count % 2 != 0) Console.WriteLine("Brackets are not closed");
+           // Console.WriteLine("Brackets");
+           // foreach (var t in bracketsPos)
+           //     Console.WriteLine($"{equation[t]}  {t}");
 
             return bracketsPos;
         }
 
-        private int BracketsCalculated(string equation, List<int> bracketsPos)
+        private List<int> BracketsPairsSearch(string equation, List<int> bracketsPos)
         {
-            /*
-            for (int i = bracketsPos.Count; i > 0; i-=2)
+            List<int> bracketPairs = new List<int>();
+
+            for (int i = bracketsPos.Count-1 ; i >= 0; i--)
             {
-                Console.WriteLine($"Brackets check: {i / 2 - 1}  {equation[bracketsPos[i / 2 - 1]]}  {i / 2}   {equation[bracketsPos[i / 2]]}");
-                if (equation[bracketsPos[i / 2 - 1]] != '(')
+                if ( equation[bracketsPos[i]] == '(')
                 {
-                    Console.WriteLine("Er");
+                  //  Console.WriteLine($"i: {i}");
+                    bracketPairs.Add(bracketsPos[i]);
+                    for (int count = i; count < bracketsPos.Count; count++)
+                    {
+                        if (equation[bracketsPos[count]] == ')')
+                        {
+                           // Console.WriteLine($"c: {count}");
+                            bracketPairs.Add(bracketsPos[count]);
+
+                          //  Console.WriteLine($"Removed: i={i} bracketsPos= {bracketsPos[i]}, count={count} bracketsPos= {bracketsPos[count]}");
+                            bracketsPos.RemoveAt(count);
+                            bracketsPos.RemoveAt(i);
+                            break;
+                        }
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Well done");
-                }
-                
             }
-           
-            for (int i = bracketsPos.Count; i > 0; i-=2)
-            {
-               // Console.WriteLine($"Brackets count: {bracketsPos.Count}");
-                Console.WriteLine($"Brackets check: {i / 2 }  {equation[bracketsPos[i / 2]]} ");
-                //Console.WriteLine(bracketsPos[i / 2]);
-               // bracketsPos.RemoveAt(i / 2);
+           // Console.WriteLine("Brackets");
+           // foreach (var br in bracketPairs)
+            //    Console.WriteLine($" {br} {equation[br]}");
 
-                Console.WriteLine($"Brackets check: {i / 2 + 1}  ");// {equation[bracketsPos[i / 2]]} ");
-                Console.WriteLine();
-                //Console.WriteLine(bracketsPos[i / 2]);
-                //bracketsPos.RemoveAt(i / 2+1);
-            }
-             */
-            int pos = 0;
-
-            for (int i = 0; i < bracketsPos.Count; i++)
-            {
-                if()
-            }
-
-
-            if (bracketsPos.Count % 2 != 0) Console.WriteLine("Brackets are not closed");
-
-            Console.WriteLine("Brackets");
-            foreach (var t in bracketsPos)
-                Console.WriteLine(t);
-
-            return 0;
+            return bracketPairs;
         }
+
+        private float BracketsCalculated(List<int> bracketPairs)
+        {
+            string equationCopy = equation.Substring(bracketPairs[0] + 1, bracketPairs[1] - bracketPairs[0] - 1);
+
+            Console.WriteLine($"Pairs count: {bracketPairs.Count}");
+             Console.WriteLine("Brackets");
+             foreach (var br in bracketPairs)
+                Console.WriteLine($" {br} {equation[br]}");
+
+            Console.WriteLine($"0 Pair: {equationCopy}");
+            Console.WriteLine($"0 Equation: {equationCopy}");
+
+            Console.Write(" Answer:");
+            Console.WriteLine(Convert.ToString(CalculateEquation(SignSearch(equationCopy),
+                     SeparateNumber(SignSearch(equationCopy), equationCopy))));
+
+
+            for (int i = 2; i < bracketPairs.Count; i += 2)
+            {
+                equationCopy = equation.Substring(bracketPairs[i] + 1, bracketPairs[i + 1] - bracketPairs[i] - 1);
+
+                Console.WriteLine($"{i} Pair:{bracketPairs[i] + 1}, {bracketPairs[i + 1] - bracketPairs[i] - 1}");
+                Console.WriteLine($"{i} Equation: {equationCopy}");
+
+                Console.Write(" Answer:");
+                Console.WriteLine( Convert.ToString(CalculateEquation(SignSearch(equationCopy), 
+                         SeparateNumber(SignSearch(equationCopy), equationCopy)) ));
+            }
+            return 0; 
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public string CalculateEquationDataTableCompute(string equation)
