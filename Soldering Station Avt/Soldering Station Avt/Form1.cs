@@ -222,7 +222,7 @@ namespace Soldering_Station_Avt
             int Time = 0;
             string s_rMess = new string(rMess);
             //Message type:
-            //head pr  temp  ti:me Start with 0- sec, 1- min, 2 - hour
+            //head pr  temp  ti:me crc Start with 0- sec, 1- min, 2 - hour
             // 01   0  000   00 00 0
             if (rMess.Length == 12 && rMess[0] == '0')
             {
@@ -288,7 +288,10 @@ namespace Soldering_Station_Avt
 
         }
 
-        
+        private void ShowOtherPoint_lb_Click(object sender, EventArgs e)
+        {
+
+        }
 
         private void COMGet_Butt_Click(object sender, EventArgs e)
         {

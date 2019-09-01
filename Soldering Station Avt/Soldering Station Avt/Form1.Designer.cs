@@ -370,9 +370,10 @@
             this.ShowOtherPoint_lb.AutoSize = true;
             this.ShowOtherPoint_lb.Location = new System.Drawing.Point(1135, 15);
             this.ShowOtherPoint_lb.Name = "ShowOtherPoint_lb";
-            this.ShowOtherPoint_lb.Size = new System.Drawing.Size(62, 13);
+            this.ShowOtherPoint_lb.Size = new System.Drawing.Size(73, 13);
             this.ShowOtherPoint_lb.TabIndex = 14;
-            this.ShowOtherPoint_lb.Text = "Click to me!";
+            this.ShowOtherPoint_lb.Text = "Point from MC\r\n";
+            this.ShowOtherPoint_lb.Click += new System.EventHandler(this.ShowOtherPoint_lb_Click);
             // 
             // Form1
             // 
