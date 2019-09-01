@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Globalization;
 
 
 namespace CoociesForServer
@@ -21,8 +22,9 @@ namespace CoociesForServer
         public Form1()
         {
             InitializeComponent();
+            button1.Visible = false;
 
-            TrackedFolder_dataGV.AutoResizeColumns();       
+            TrackedFolder_dataGV.AutoResizeColumns();
             TrackedFolder_dataGV.ColumnCount = 7;
             TrackedFolder_dataGV.AllowUserToAddRows = false;
             TrackedFolder_dataGV.AutoSizeColumnsMode =
@@ -81,8 +83,36 @@ namespace CoociesForServer
         {
             try
             {
-                SearchOldestItemRowInDataGridView();
+                ProgressBar_lb.Text = "Last Update Time: " + DateTime.Now.ToString();
                 CheckAvalSpace_butt.PerformClick();
+                if (Convert.ToInt32(FreeSpace_tbox.Text.ToString()) > int.Parse(TrackedFolder_dataGV["FreeSpace, MB", 0].Value.ToString(), NumberStyles.AllowThousands))
+                {
+                    timer.Stop();
+                    string Answer = SearchOldestItemRowInDataGridView();
+                    if (Answer != "" && Answer != "Error")
+                    {
+                        
+                        try
+                        {
+                            File.Delete(Answer);
+                            
+                        }
+                        catch (Exception ex)
+                        {
+                          //  MessageBox.Show(ex.ToString());
+                        }
+                        try
+                        {
+                            Directory.Delete(Answer, true);
+                        }
+                        catch (Exception ex)
+                        {
+                          //  MessageBox.Show(ex.ToString());
+                        }
+                        
+                    }
+                    timer.Start();
+                }                
             }
             catch (Exception ex)
             {
@@ -116,7 +146,7 @@ namespace CoociesForServer
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-            }         
+            }
         }
 
         //
@@ -183,7 +213,7 @@ namespace CoociesForServer
                     }
                     else
                     {
-                        return "None";
+                        continue;
                     }
                     if (oldestItemTime.Days < currentFileTime.Days)
                     {
@@ -226,23 +256,31 @@ namespace CoociesForServer
 
         private void Tracking_chBox_CheckedChanged(object sender, EventArgs e)
         {
-            if(Tracking_chBox.Checked)
+            if (Tracking_chBox.Checked)
             {
                 if (TimerInter_tBox.Text != String.Empty)
                 {
-                    timer.Interval = Convert.ToInt32(TimerInter_tBox.Text) * 1000;                   
+                    timer.Interval = Convert.ToInt32(TimerInter_tBox.Text) * 1000;
                 }
                 else
                 {
                     timer.Interval = 1000; //интервал между срабатываниями 1000 миллисекунд
                 }
 
+                FreeSpace_tbox.ReadOnly = true;
+                TimerInter_tBox.ReadOnly = true;
+                TrackedFolder_dataGV.Columns["DeletingFile"].ReadOnly = true;
+                TrackedFolder_dataGV.Columns["DeletingFolder"].ReadOnly = true;
                 timer.Tick += new EventHandler(timer_Tick); //подписываемся на события Tick
                 timer.Start();
             }
             else
             {
                 timer.Stop();
+                FreeSpace_tbox.ReadOnly = false;
+                TimerInter_tBox.ReadOnly = false;
+                TrackedFolder_dataGV.Columns["DeletingFile"].ReadOnly = false;
+                TrackedFolder_dataGV.Columns["DeletingFolder"].ReadOnly = false;
             }
         }
 
@@ -262,6 +300,7 @@ namespace CoociesForServer
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show(SearchOldestItemRowInDataGridView());
+            File.Delete(SearchOldestItemRowInDataGridView());
         }
 
         private void TrackedFolder_dataGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
@@ -271,6 +310,37 @@ namespace CoociesForServer
             object header = this.TrackedFolder_dataGV.Rows[index].HeaderCell.Value;
             if (header == null || !header.Equals(indexStr))
                 this.TrackedFolder_dataGV.Rows[index].HeaderCell.Value = indexStr;
+        }
+
+        private void ApplicationHeaderName_tBox_TextChanged(object sender, EventArgs e)
+        {
+            this.Text = ApplicationHeaderName_tBox.Text;
+        }
+
+        private void FreeSpace_lb_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FreeSpace_tbox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void DeleteSelectedRow_butt_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in TrackedFolder_dataGV.SelectedRows)
+            {
+                TrackedFolder_dataGV.Rows.RemoveAt(row.Index);
+            }
+        }
+
+        private void ProgressBar_lb_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
