@@ -90,16 +90,19 @@ namespace CoociesForServer
                     timer.Stop();
                     string Answer = SearchOldestItemRowInDataGridView();
                     if (Answer != "" && Answer != "Error")
-                    {
-                        
+                    {                        
                         try
                         {
-                            File.Delete(Answer);
-                            
+                           File.Delete(Answer);                            
                         }
                         catch (Exception ex)
                         {
-                          //  MessageBox.Show(ex.ToString());
+                            List<String> ItemsWithMistake = new List<string>();
+                            ItemsWithMistake.Add(Answer);
+
+                            DataGVFilling(ItemsWithMistake);
+                            File.Delete(SearchOldestItemRowInDataGridView());
+                            //  MessageBox.Show(ex.ToString());
                         }
                         try
                         {
@@ -107,7 +110,12 @@ namespace CoociesForServer
                         }
                         catch (Exception ex)
                         {
-                          //  MessageBox.Show(ex.ToString());
+                            List<String> ItemsWithMistake = new List<string>();
+                            ItemsWithMistake.Add(Answer);
+
+                            DataGVFilling(ItemsWithMistake);
+                            Directory.Delete(SearchOldestItemRowInDataGridView(), true);
+                            //  MessageBox.Show(ex.ToString());
                         }
                         
                     }
@@ -122,6 +130,8 @@ namespace CoociesForServer
 
         private void CheckAvalSpace_butt_click(object sender, EventArgs e)
         {
+            DataGVFilling();
+            /*
             try
             {
                 for (int i = 0; i < TrackedFolder_dataGV.Rows.Count; i++)
@@ -147,6 +157,71 @@ namespace CoociesForServer
             {
                 MessageBox.Show(ex.ToString());
             }
+            */
+        }
+
+        //
+        // Summary:
+        //          Filling Data Grid View 
+        private void DataGVFilling()
+        {
+            try
+            {
+                for (int i = 0; i < TrackedFolder_dataGV.Rows.Count; i++)
+                {
+                    DriveInfo path = new DriveInfo(TrackedFolder_dataGV["Path", i].Value.ToString());
+                    double Ffree = (path.AvailableFreeSpace / 1024) / 1024;
+                    DirectoryInfo directory = new DirectoryInfo(TrackedFolder_dataGV["Path", i].Value.ToString());
+
+                    TrackedFolder_dataGV["FreeSpace, MB", i].Value = Ffree.ToString("#,##");
+                    TrackedFolder_dataGV["Folders", i].Value = directory.GetDirectories().Length.ToString();
+                    TrackedFolder_dataGV["Items", i].Value = directory.GetFiles().Length.ToString();
+
+                    TrackedFolder_dataGV["OldestFile", i].Value =
+                                   GetOldestItem(TrackedFolder_dataGV["Path", i].Value.ToString(), "ForFiles");
+
+                    TrackedFolder_dataGV["OldestFolder", i].Value =
+                                   GetOldestItem(TrackedFolder_dataGV["Path", i].Value.ToString());                    
+
+                    TrackedFolder_dataGV.AutoResizeColumns();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("DataGVFilling:" + ex.ToString());
+            }
+        }
+
+        //
+        // Summary:
+        //          Filling Data Grid View without this items
+        private void DataGVFilling(List<string> WithoutThoseItems)
+        {
+            try
+            {
+                for (int i = 0; i < TrackedFolder_dataGV.Rows.Count; i++)
+                {
+                    DriveInfo path = new DriveInfo(TrackedFolder_dataGV["Path", i].Value.ToString());
+                    double Ffree = (path.AvailableFreeSpace / 1024) / 1024;
+                    DirectoryInfo directory = new DirectoryInfo(TrackedFolder_dataGV["Path", i].Value.ToString());
+
+                    TrackedFolder_dataGV["FreeSpace, MB", i].Value = Ffree.ToString("#,##");
+                    TrackedFolder_dataGV["Folders", i].Value = directory.GetDirectories().Length.ToString();
+                    TrackedFolder_dataGV["Items", i].Value = directory.GetFiles().Length.ToString();
+
+                    TrackedFolder_dataGV["OldestFile", i].Value =
+                                   GetOldestItem(TrackedFolder_dataGV["Path", i].Value.ToString(), WithoutThoseItems, "ForFiles");
+
+                    TrackedFolder_dataGV["OldestFolder", i].Value =
+                                   GetOldestItem(TrackedFolder_dataGV["Path", i].Value.ToString(), WithoutThoseItems);
+
+                    TrackedFolder_dataGV.AutoResizeColumns();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("DataGVFilling WithoutThoseItems:  " + ex.ToString());
+            }
         }
 
         //
@@ -169,6 +244,26 @@ namespace CoociesForServer
             return Path.GetFileName(oldestItemName);
         }
 
+        //
+        // Summary:
+        //      Returns value is oldes File path without  those items
+        private string GetOldestItem(string FilesPath, List<string> WithoutThoseItems, string ForFile = "0")
+        {
+            TimeSpan oldestItemTime = DateTime.Now - DateTime.Now;
+            string oldestItemName = "";
+            //Search oldest directory
+            foreach (string file in Directory.GetFiles(FilesPath))
+            {
+                TimeSpan currentFileTime = DateTime.Now - File.GetLastWriteTime(file);                
+                if ((oldestItemTime.Days < currentFileTime.Days) && WithoutThoseItems.IndexOf(file) == -1)
+                {
+                    oldestItemTime = currentFileTime;
+                    oldestItemName = file;
+                }
+            }
+            return Path.GetFileName(oldestItemName);
+        }
+
 
         //
         // Summary:
@@ -182,6 +277,26 @@ namespace CoociesForServer
             {
                 TimeSpan currentFileTime = DateTime.Now - File.GetLastWriteTime(file);
                 if (oldestItemTime.Days < currentFileTime.Days)
+                {
+                    oldestItemTime = currentFileTime;
+                    oldestItemName = file;
+                }
+            }
+            return Path.GetFileName(oldestItemName);
+        }
+
+        //
+        // Summary:
+        //      Returns value is oldes Directory path without  those items
+        private string GetOldestItem(string DirectoryPath, List<string> WithoutThoseItems)
+        {
+            TimeSpan oldestItemTime = DateTime.Now - DateTime.Now;
+            string oldestItemName = "";           
+            //Search oldest directory
+            foreach (string file in Directory.GetDirectories(DirectoryPath))
+            {
+                TimeSpan currentFileTime = DateTime.Now - File.GetLastWriteTime(file);
+                if ((oldestItemTime.Days < currentFileTime.Days)  && !WithoutThoseItems.Contains(file))
                 {
                     oldestItemTime = currentFileTime;
                     oldestItemName = file;
@@ -225,7 +340,7 @@ namespace CoociesForServer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show("SearchOldestItemRowInDataGridView:  " + ex.ToString());
             }
             return "Error";
         }
@@ -250,7 +365,7 @@ namespace CoociesForServer
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                MessageBox.Show("AddToTrackFolLb_butt_Click: " + ex.ToString());
             }
         }
 
@@ -300,7 +415,15 @@ namespace CoociesForServer
         private void button1_Click(object sender, EventArgs e)
         {
             MessageBox.Show(SearchOldestItemRowInDataGridView());
-            File.Delete(SearchOldestItemRowInDataGridView());
+            //MessageBox.Show(SearchOldestItemRowInDataGridView());
+            // File.Delete(SearchOldestItemRowInDataGridView());
+            List<String> ItemsWithMistake = new List<string>();
+            ItemsWithMistake.Add("C:\\Users\\Admin\\.android\\adbkey");
+            ItemsWithMistake.Add("C:\\Users\\Admin\\.android\\avd");
+
+            DataGVFilling(ItemsWithMistake);
+            MessageBox.Show(SearchOldestItemRowInDataGridView());
+           // File.Delete(SearchOldestItemRowInDataGridView());
         }
 
         private void TrackedFolder_dataGV_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
